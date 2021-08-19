@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@symend/tagger",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Automate adding a tag for the last commit diff",
   "type": "module",
   "module": "dist/out-tsc/src/index.js",
