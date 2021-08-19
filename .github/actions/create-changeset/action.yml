@@ -1,4 +1,4 @@
-name: Changeset Action
+name: Create Changeset
 description: Automate adding a changeset for simple pull requests
 branding:
   icon: book
@@ -11,3 +11,4 @@ inputs:
 runs:
   using: docker
   image: Dockerfile
+  pre-entrypoint: 'cp yarn.lock .github/actions/create-changeset'
