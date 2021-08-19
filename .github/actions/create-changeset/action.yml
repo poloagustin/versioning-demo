@@ -1,0 +1,13 @@
+name: Changeset Action
+description: Automate adding a changeset for simple pull requests
+branding:
+  icon: book
+  color: blue
+inputs:
+  ignoredPackages:
+    description: |
+      A comma separated list of package names that will be ignored from changeset creation
+    required: false
+runs:
+  using: docker
+  image: Dockerfile

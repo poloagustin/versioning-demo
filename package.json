@@ -1,0 +1,22 @@
+{
+  "name": "versioning-demo",
+  "version": "0.0.0",
+  "description": "test",
+  "main": "index.js",
+  "repository": "git@github.com:poloagustin/versioning-demo.git",
+  "author": "apolo <agustin.polo@cloudx.com>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.4.0",
+    "@changesets/cli": "^2.16.0",
+    "lerna": "^4.0.0"
+  },
+  "workspaces": [
+    "packages/*",
+    ".github/actions/*"
+  ],
+  "scripts": {
+    "version-packages": "changeset version"
+  }
+}

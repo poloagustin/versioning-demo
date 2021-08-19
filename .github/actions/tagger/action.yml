@@ -1,0 +1,8 @@
+name: Changeset Action
+description: Automate adding a changeset for simple pull requests
+branding:
+  icon: book
+  color: blue
+runs:
+  using: docker
+  image: Dockerfile

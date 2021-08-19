@@ -1,0 +1,13 @@
+{
+  "name": "@versioning-demo/app",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "serve": "^12.0.0"
+  },
+  "scripts": {
+    "start": "serve"
+  }
+}

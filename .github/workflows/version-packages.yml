@@ -1,0 +1,27 @@
+name: Version Packages
+on:
+  push:
+    branches:
+      - main
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  version-packages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Create changeset
+        uses: ./.github/actions/create-changeset
+      - name: Version packages
+        run: yarn run version-packages
+      - name: Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore(changeset): bump package versions"
+          commit_options: '--no-verify --signoff'
+          token: ${{ secrets.GITHUB_TOKEN }}

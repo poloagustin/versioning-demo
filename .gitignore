@@ -1,0 +1,35 @@
+
+# Built style type definitions
+*.scss.d.ts
+*.graphql.d.ts
+
+# Coverage directory used by tools like jest
+coverage
+
+# Dependency directory
+# https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git-
+node_modules
+
+# npm configs
+.npmrc
+.yarnrc
+
+# Debug log from npm
+npm-debug.log
+**/npm-debug.log
+
+# Debug log from lerna
+lerna-debug.log
+
+# Debug logs from yarn
+**/yarn-error.log
+
+# Editor ignores
+.idea
+.vscode
+.DS_Store
+.jirapreparecommitmsgrc
+tmp
+**/test.log
+*.tsbuildinfo
+*.code-workspace
