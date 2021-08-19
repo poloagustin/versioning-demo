@@ -25,3 +25,7 @@ jobs:
           commit_message: "chore(changeset): bump package versions"
           commit_options: '--no-verify --signoff'
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create tags
+        uses: ./.github/actions/tagger
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
