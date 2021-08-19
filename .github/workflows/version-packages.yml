@@ -26,6 +26,9 @@ jobs:
           cp yarn.lock .github/actions/tagger
       - name: Create changeset
         uses: ./.github/actions/create-changeset
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ignoredPackages: '"versioning-demo"'
       - name: Version packages
         run: yarn run version-packages
       - name: Commit Changes
@@ -33,6 +36,7 @@ jobs:
         with:
           commit_message: "chore(changeset): bump package versions"
           commit_options: '--no-verify --signoff'
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Create tags
         uses: ./.github/actions/tagger
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -5,11 +5,6 @@ import changesetsWrite from "@changesets/write";
 import execa from "execa";
 import { readPackageUpAsync } from "read-pkg-up";
 
-type GithubContextPayload = typeof github.context.payload;
-type GithubPullRequest = Pick<
-  Required<GithubContextPayload>,
-  "pull_request"
->["pull_request"];
 type ChangesetType = "major" | "minor" | "patch";
 interface PackageRelease {
   name: string;
@@ -24,7 +19,8 @@ const write = ((changesetsWrite as unknown) as {
 }).default;
 
 async function buildPackagesToRelease(
-  pullRequest: GithubPullRequest,
+  head: string,
+  base: string,
   type: ChangesetType,
   ignoredPackages: string[]
 ): Promise<PackageRelease[]> {
@@ -33,8 +29,8 @@ async function buildPackagesToRelease(
     "--no-commit-id",
     "--name-only",
     "-r",
-    pullRequest.head.sha,
-    pullRequest.base.sha,
+    head,
+    base,
   ]);
   const files = stdout.split("\n");
   const asyncPackageNames = files
@@ -60,20 +56,25 @@ async function buildPackagesToRelease(
   return allUniquePackageNames.map((name) => ({ name, type }));
 }
 
-const buildChangesetSummary = (pullRequest: GithubPullRequest) => {
-  const summary = pullRequest.title;
+const getCommitMessage = async () => {
+  const githubToken = core.getInput("token");
+  const octokit = github.getOctokit(githubToken);
+  const summary = await octokit.git.getCommit({
+    commit_sha: github.context.sha,
+    ...github.context.repo,
+  });
   if (!summary) throw new Error("Changeset summary could not be determined");
-  return summary;
+  return summary.data.message;
 };
 
 const buildChangesetType = async (
-  pullRequest: GithubPullRequest
+  commitMessage: string
 ): Promise<ChangesetType | null> => {
-  if (pullRequest.title.includes("BREAKING CHANGE")) {
+  if (commitMessage.includes("BREAKING CHANGE")) {
     return "major";
-  } else if (pullRequest.title.startsWith("feat")) {
+  } else if (commitMessage.startsWith("feat")) {
     return "minor";
-  } else if (pullRequest.title.startsWith("fix")) {
+  } else if (commitMessage.startsWith("fix")) {
     return "patch";
   } else {
     return null;
@@ -96,14 +97,10 @@ async function run() {
     core.debug(JSON.stringify(github.context));
   }
 
-  // If we're not in a PR there's no point in running this action
-  if (!github.context.payload.pull_request) {
-    return;
-  }
+  const commitMesage = await getCommitMessage();
+  core.info(`Commit message: ${commitMesage}`);
 
-  const changesetType = await buildChangesetType(
-    github.context.payload.pull_request
-  );
+  const changesetType = await buildChangesetType(commitMesage);
 
   if (!changesetType) {
     core.info("Not adding changeset");
@@ -112,19 +109,21 @@ async function run() {
 
   core.info(`Changeset type: ${changesetType}`);
 
-  const ignoredPackages = github.context.payload.inputs?.ignoredPackages || [];
+  const head = core.getInput("head");
+  const base = core.getInput("base");
+  const ignoredPackages = core.getInput("ignoredPackages");
+  const _ignoredPackages = ignoredPackages ? JSON.parse(ignoredPackages) : [];
 
   const releases = await buildPackagesToRelease(
-    github.context.payload.pull_request,
+    head,
+    base,
     changesetType,
-    ignoredPackages
+    _ignoredPackages
   );
 
   core.info(`Packages to release: ${JSON.stringify(releases)}`);
 
-  const summary = buildChangesetSummary(github.context.payload.pull_request);
-
-  await createChangeset(releases, summary);
+  await createChangeset(releases, commitMesage);
 }
 
 run().catch((err) => {

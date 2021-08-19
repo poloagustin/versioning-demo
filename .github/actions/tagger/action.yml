@@ -3,6 +3,10 @@ description: Automate adding a changeset for simple pull requests
 branding:
   icon: book
   color: blue
+inputs:
+  token:
+    description: Token for Github
+    required: true
 runs:
   using: docker
   image: Dockerfile

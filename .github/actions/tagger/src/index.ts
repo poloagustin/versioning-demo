@@ -17,7 +17,7 @@ export function getOctokitSingleton() {
   if (octokitSingleton) {
     return octokitSingleton;
   }
-  const githubToken = core.getInput("github_token");
+  const githubToken = core.getInput("token");
   octokitSingleton = github.getOctokit(githubToken);
   return octokitSingleton;
 }
@@ -68,7 +68,7 @@ const tag = async (packages: PackageToTag[]) => {
       `Creating tag for project package name: ${projectPackage.name} version: ${projectPackage.version}.`
     );
     await createTag(
-      `${projectPackage.name.replace(symendPackageNameStart, "")}v${
+      `${projectPackage.name.replace(symendPackageNameStart, "")}/${
         projectPackage.version
       }`
     );
