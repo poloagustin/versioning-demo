@@ -20,7 +20,7 @@ jobs:
           cp yarn.lock .github/actions/upsert-prs
       - id: split_ref
         name: Split Ref
-        uses: jungwinter/split@v1
+        uses: jungwinter/split@v2
         with:
           msg: ${{ github.ref }}
           separator: '/'
