@@ -1,7 +1,7 @@
 import core from "@actions/core";
 import github from "@actions/github";
 import execa from "execa";
-import { resolve } from "path";
+import { dirname, resolve } from "path";
 import { readFile } from "fs/promises";
 
 interface PackageToTag {
@@ -11,7 +11,7 @@ interface PackageToTag {
 
 let octokitSingleton: ReturnType<typeof github.getOctokit>;
 
-const symendPackageNameStart = "@symend/";
+const getPackageScope = () => core.getInput("packageScope");
 
 export function getOctokitSingleton() {
   if (octokitSingleton) {
@@ -44,12 +44,13 @@ async function buildPackagesToTag(): Promise<PackageToTag[]> {
   ]);
   const files = stdout.split("\n");
   const packages = files
-    .filter((file) => file.endsWith("package.json"))
+    .filter((file) => file.endsWith("CHANGELOG.md"))
     .map(async (file) => {
       core.info(file);
-      const packageJsonDir = resolve(process.cwd(), file);
-      core.info(packageJsonDir);
-      const loadedFile = await readFile(packageJsonDir, "utf-8");
+      const packageJsonDir = dirname(resolve(process.cwd(), file));
+      const packageJsonPath = resolve(packageJsonDir, "package.json");
+      core.info(packageJsonPath);
+      const loadedFile = await readFile(packageJsonPath, "utf-8");
       const jsonFile = JSON.parse(loadedFile);
       return {
         name: jsonFile.name,
@@ -68,7 +69,7 @@ const tag = async (packages: PackageToTag[]) => {
       `Creating tag for project package name: ${projectPackage.name} version: ${projectPackage.version}.`
     );
     await createTag(
-      `${projectPackage.name.replace(symendPackageNameStart, "")}/${
+      `${projectPackage.name.replace(`@${getPackageScope()}/`, "")}/${
         projectPackage.version
       }`
     );

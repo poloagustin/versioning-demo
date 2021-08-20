@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@symend/create-changeset-action",
+  "name": "@versioning-demo/create-changeset-action",
   "version": "0.1.0",
   "description": "Automate adding a changeset for simple pull requests",
   "type": "module",

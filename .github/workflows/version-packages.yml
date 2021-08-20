@@ -40,3 +40,4 @@ jobs:
         uses: ./.github/actions/tagger
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          packageScope: 'versioning-demo'
