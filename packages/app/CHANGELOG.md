@@ -1,5 +1,11 @@
 # @versioning-demo/app
 
+## 1.2.0
+
+### Minor Changes
+
+- feat(newfeat): add new feature (#14)
+
 ## 1.1.0
 
 ### Minor Changes
