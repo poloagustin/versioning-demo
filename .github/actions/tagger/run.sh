@@ -1,1 +1,1 @@
-node /opt/change-action/dist/out-tsc/src/index.js
+node /opt/custom-action/dist/out-tsc/src/index.js

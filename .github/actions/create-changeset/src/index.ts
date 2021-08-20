@@ -2,7 +2,6 @@ import path from "path";
 import core from "@actions/core";
 import github from "@actions/github";
 import changesetsWrite from "@changesets/write";
-import execa from "execa";
 import { readPackageUpAsync } from "read-pkg-up";
 
 type ChangesetType = "major" | "minor" | "patch";
@@ -11,41 +10,27 @@ interface PackageRelease {
   type: ChangesetType;
 }
 
-const ignoredFiles = ["package-lock.json", "yarn.lock"];
-
 // Extracting default function because at this moment we can't find a way to import the esmodule instead of the commonjs
 const write = ((changesetsWrite as unknown) as {
   default: typeof changesetsWrite;
 }).default;
 
 async function buildPackagesToRelease(
-  head: string,
-  base: string,
   type: ChangesetType,
-  ignoredPackages: string[]
+  ignoredPackages: string[],
+  paths: string[]
 ): Promise<PackageRelease[]> {
-  const { stdout } = await execa("git", [
-    "diff-tree",
-    "--no-commit-id",
-    "--name-only",
-    "-r",
-    head,
-    base,
-  ]);
-  const files = stdout.split("\n");
-  const asyncPackageNames = files
-    .filter((file) => !ignoredFiles.includes(file))
-    .map(async (file) => {
-      const cwd = path.dirname(file);
-      const packageUpResult = await readPackageUpAsync({ cwd });
-      if (
-        !packageUpResult ||
-        ignoredPackages.includes(packageUpResult.packageJson.name)
-      ) {
-        return null;
-      }
-      return packageUpResult.packageJson.name;
-    });
+  const asyncPackageNames = paths.map(async (file) => {
+    const cwd = path.dirname(file);
+    const packageUpResult = await readPackageUpAsync({ cwd });
+    if (
+      !packageUpResult ||
+      ignoredPackages.includes(packageUpResult.packageJson.name)
+    ) {
+      return null;
+    }
+    return packageUpResult.packageJson.name;
+  });
 
   const packageNames = await Promise.all(asyncPackageNames);
   const uniquePackageNames = new Set(packageNames);
@@ -109,16 +94,19 @@ async function run() {
 
   core.info(`Changeset type: ${changesetType}`);
 
-  const head = core.getInput("head");
-  const base = core.getInput("base");
-  const ignoredPackages = core.getInput("ignoredPackages");
-  const _ignoredPackages = ignoredPackages ? JSON.parse(ignoredPackages) : [];
+  const _ignoredPackages = core.getInput("ignoredPackages");
+  const ignoredPackages = _ignoredPackages
+    ? JSON.parse(_ignoredPackages).split(",")
+    : [];
+  const _paths = core.getInput("paths");
+  const paths = _paths ? JSON.parse(_paths) : [];
+  core.info("Will work with following paths");
+  core.info(_paths);
 
   const releases = await buildPackagesToRelease(
-    head,
-    base,
     changesetType,
-    _ignoredPackages
+    ignoredPackages,
+    paths
   );
 
   core.info(`Packages to release: ${JSON.stringify(releases)}`);

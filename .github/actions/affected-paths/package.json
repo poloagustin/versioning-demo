@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "@versioning-demo/affected-paths",
+  "version": "0.1.0",
+  "description": "Outputs paths affected by a range of commits",
+  "type": "module",
+  "module": "dist/out-tsc/src/index.js",
+  "scripts": {
+    "start": "node --loader ts-node/esm ./src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.7",
+    "execa": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.6.1",
+    "ts-node": "^10.2.0",
+    "typescript": "^4.3.5"
+  }
+}

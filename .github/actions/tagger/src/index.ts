@@ -1,6 +1,5 @@
 import core from "@actions/core";
 import github from "@actions/github";
-import execa from "execa";
 import { dirname, resolve } from "path";
 import { readFile } from "fs/promises";
 
@@ -33,30 +32,17 @@ export async function createTag(newTag: string) {
   });
 }
 
-async function buildPackagesToTag(): Promise<PackageToTag[]> {
-  const { stdout } = await execa("git", [
-    "diff-tree",
-    "--no-commit-id",
-    "--name-only",
-    "-r",
-    "HEAD",
-    "HEAD~1",
-  ]);
-  const files = stdout.split("\n");
-  const packages = files
-    .filter((file) => file.endsWith("CHANGELOG.md"))
-    .map(async (file) => {
-      core.info(file);
-      const packageJsonDir = dirname(resolve(process.cwd(), file));
-      const packageJsonPath = resolve(packageJsonDir, "package.json");
-      core.info(packageJsonPath);
-      const loadedFile = await readFile(packageJsonPath, "utf-8");
-      const jsonFile = JSON.parse(loadedFile);
-      return {
-        name: jsonFile.name,
-        version: jsonFile.version,
-      };
-    });
+async function buildPackagesToTag(paths: string[]): Promise<PackageToTag[]> {
+  const packages = paths.map(async (path) => {
+    const packageJsonPath = resolve(path, "package.json");
+    core.info(packageJsonPath);
+    const loadedFile = await readFile(packageJsonPath, "utf-8");
+    const jsonFile = JSON.parse(loadedFile);
+    return {
+      name: jsonFile.name,
+      version: jsonFile.version,
+    };
+  });
 
   const packageNames = await Promise.all(packages);
 
@@ -86,7 +72,10 @@ async function run() {
     core.debug(JSON.stringify(github.context));
   }
 
-  const packages = await buildPackagesToTag();
+  const _paths = core.getInput("paths");
+  const paths = _paths ? JSON.parse(_paths) : [];
+
+  const packages = await buildPackagesToTag(paths);
 
   await tag(packages);
 }
