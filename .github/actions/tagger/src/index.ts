@@ -68,7 +68,7 @@ const tag = async (packages: PackageToTag[]) => {
       `Creating tag for project package name: ${projectPackage.name} version: ${projectPackage.version}.`
     );
     await createTag(
-      `${projectPackage.name.replace(getPackageScope(), "")}/${
+      `${projectPackage.name.replace(`${getPackageScope()}/`, "")}/${
         projectPackage.version
       }`
     );
