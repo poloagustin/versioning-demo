@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@symend/tagger",
+  "name": "@versioning-demo/tagger",
   "version": "0.1.0",
   "description": "Automate adding a tag for the last commit diff",
   "type": "module",

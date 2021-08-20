@@ -11,7 +11,7 @@ interface PackageToTag {
 
 let octokitSingleton: ReturnType<typeof github.getOctokit>;
 
-const symendPackageNameStart = "@symend/";
+const getPackageScope = () => core.getInput("packageScope");
 
 export function getOctokitSingleton() {
   if (octokitSingleton) {
@@ -68,7 +68,7 @@ const tag = async (packages: PackageToTag[]) => {
       `Creating tag for project package name: ${projectPackage.name} version: ${projectPackage.version}.`
     );
     await createTag(
-      `${projectPackage.name.replace(symendPackageNameStart, "")}/${
+      `${projectPackage.name.replace(getPackageScope(), "")}/${
         projectPackage.version
       }`
     );
