@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@versioning-demo/upsert-prs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Automate upserting pull requests for affected packages",
   "type": "module",
   "module": "dist/out-tsc/src/index.js",

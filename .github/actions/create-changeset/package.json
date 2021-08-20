@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@versioning-demo/create-changeset-action",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Automate adding a changeset for simple pull requests",
   "type": "module",
   "module": "dist/out-tsc/src/index.js",
