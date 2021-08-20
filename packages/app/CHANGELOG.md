@@ -1,5 +1,11 @@
 # @versioning-demo/app
 
+## 1.3.0
+
+### Minor Changes
+
+- feat(eric): add a line for eric (#16)
+
 ## 1.2.0
 
 ### Minor Changes
