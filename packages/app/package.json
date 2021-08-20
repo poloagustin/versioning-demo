@@ -8,6 +8,7 @@
     "serve": "^12.0.0"
   },
   "scripts": {
-    "start": "serve"
+    "start": "yarn build && serve public",
+    "build": "cp package.json ./public/package.json"
   }
 }
