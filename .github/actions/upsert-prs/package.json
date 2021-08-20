@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "name": "@versioning-demo/upsert-prs",
+  "version": "0.1.0",
+  "description": "Automate upserting pull requests for affected packages",
+  "type": "module",
+  "module": "dist/out-tsc/src/index.js",
+  "scripts": {
+    "start": "node --loader ts-node/esm ./src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.7",
+    "@actions/github": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.6.1",
+    "ts-node": "^10.2.0",
+    "typescript": "^4.3.5"
+  }
+}

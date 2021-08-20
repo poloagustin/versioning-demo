@@ -22,13 +22,19 @@ jobs:
           CYPRESS_INSTALL_BINARY: 0
       - name: Copy lockfile to actions
         run: |
+          cp yarn.lock .github/actions/affected-paths
           cp yarn.lock .github/actions/create-changeset
           cp yarn.lock .github/actions/tagger
+          cp yarn.lock .github/actions/upsert-affected-prs
+      - name: Affected files
+        id: all_affected
+        uses: ./.github/actions/affected-paths
       - name: Create changeset
         uses: ./.github/actions/create-changeset
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ignoredPackages: '"versioning-demo"'
+          paths: ${{ steps.all_affected.outputs.paths }}
       - name: Version packages
         run: yarn run version-packages
       - name: Commit Changes
@@ -36,8 +42,20 @@ jobs:
         with:
           commit_message: "chore(changeset): bump package versions"
           commit_options: '--no-verify --signoff'
+      - name: Affected Changelogs
+        id: affected_changelogs
+        uses: ./.github/actions/affected-paths
+        with:
+          filter: 'CHANGELOG.md$'
       - name: Create tags
         uses: ./.github/actions/tagger
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           packageScope: 'versioning-demo'
+          paths: ${{ steps.affected_changelogs.outputs.paths }}
+      - name: Create Pull Requests for affected packages
+        uses: ./.github/actions/upsert-affected-prs
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          paths: ${{ steps.affected_changelogs.outputs.paths }}
+          environmentName: test

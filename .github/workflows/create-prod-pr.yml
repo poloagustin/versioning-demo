@@ -1,0 +1,32 @@
+name: Create Production Pull Request
+on:
+  push:
+    branches:
+      - test/*
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest:
+    steps:
+      - id: split_ref:
+        name: Split Ref
+        uses: jungwinter/split@v1
+        with:
+          msg: ${{ github.ref }}
+          separator: '/'
+      - name: Set branch name
+        id: set_branch_name
+        run: |
+          # BRANCH_NAME is the last block of refs/heads/test/<branchName>
+          BRANCH_NAME=${{ steps.split_ref.outputs._3 }}
+          echo "::set-output name=branch_name::$BRANCH_NAME"
+      - name: Create Production Pull Request
+        uses: ./.github/actions/upsert-prs
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          paths: '["${{ steps.set_branch_name.outputs.branch_name }}"]'
+          environmentName: prod
+
+      

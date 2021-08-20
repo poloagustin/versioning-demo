@@ -8,20 +8,12 @@ inputs:
     description: |
       A comma separated list of package names that will be ignored from changeset creation
     required: false
-  head:
-    description: |
-      git ref to use as head.
-      You can use github.pull_request.head.ref if you're on a PR context.
-      Defaults to 'HEAD'
-    default: 'HEAD'
-  base:
-    description: |
-      git ref to use as base.
-      You can use github.pull_request.base.ref if you're on a PR context.
-      Defaults to 'HEAD~1'
-    default: 'HEAD~1'
   token:
     description: Token for Github
+    required: true
+  paths:
+    description: |
+      A JSON list of strings with the paths that will be used to determine the packages that changed
     required: true
 runs:
   using: docker

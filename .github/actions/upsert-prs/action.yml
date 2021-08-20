@@ -1,5 +1,5 @@
-name: Changeset Action
-description: Automate adding a changeset for simple pull requests
+name: Upsert Pull Requests
+description: Automate upserting pull requests
 branding:
   icon: book
   color: blue
@@ -7,12 +7,13 @@ inputs:
   token:
     description: Token for Github
     required: true
-  packageScope:
-    description: The scope of the packages
-    required: true
   paths:
     description: |
       A JSON list of strings with the paths that will be used to determine the packages that changed
+    required: true
+  environmentName:
+    description: |
+      The environment to which to create the PR against
     required: true
 runs:
   using: docker
