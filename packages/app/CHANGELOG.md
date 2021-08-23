@@ -1,5 +1,11 @@
 # @versioning-demo/app
 
+## 1.4.0
+
+### Minor Changes
+
+- feat(app): add deploy wf (#17)
+
 ## 1.3.0
 
 ### Minor Changes
