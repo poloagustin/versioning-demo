@@ -1,5 +1,11 @@
 # @versioning-demo/app
 
+## 1.6.0
+
+### Minor Changes
+
+- feat: added something for the demo (#20)
+
 ## 1.5.0
 
 ### Minor Changes
