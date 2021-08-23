@@ -33,3 +33,6 @@ tmp
 **/test.log
 *.tsbuildinfo
 *.code-workspace
+
+# Local Netlify folder
+.netlify
