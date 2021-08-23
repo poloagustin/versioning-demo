@@ -1,5 +1,11 @@
 # @versioning-demo/app
 
+## 1.5.0
+
+### Minor Changes
+
+- feat(btn): add button (#19)
+
 ## 1.4.0
 
 ### Minor Changes
