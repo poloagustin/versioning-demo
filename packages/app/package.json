@@ -5,10 +5,12 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
+    "netlify-cli": "^6.7.2",
     "serve": "^12.0.0"
   },
   "scripts": {
     "start": "yarn build && serve public",
-    "build": "cp package.json ./public/package.json"
+    "build": "cp package.json ./public/package.json",
+    "deploy": "netlify deploy --dir=public --prod"
   }
 }
